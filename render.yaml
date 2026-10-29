@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: expensemate
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: bun install && bun run build
+    startCommand: PORT=$PORT HOSTNAME=0.0.0.0 bun run start
+    envVars:
+      - key: DATABASE_URL
+        value: file:../db/custom.db
+      - key: NODE_ENV
+        value: production
