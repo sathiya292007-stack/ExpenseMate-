@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Transaction {
+  id            String   @id @default(cuid())
+  type          String // "income" | "expense"
+  amount        Float
+  category      String // expense: Food, Transport, Refreshment, Academic, Shopping, Bills, Health, Entertainment, Other | income: Salary, Pocket Money, Part-time, Scholarship, Other Income
+  description   String   @default("")
+  paymentMethod String   @default("cash") // cash, upi, card, bank
+  date          DateTime
+  source        String   @default("manual") // manual, voice
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([date])
+  @@index([type])
+  @@index([category])
+}
+
+model Budget {
+  id        String   @id @default(cuid())
+  category  String   @unique
+  limit     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SavingsGoal {
+  id           String    @id @default(cuid())
+  name         String
+  targetAmount Float
+  savedAmount  Float     @default(0)
+  targetDate   DateTime?
+  completed    Boolean   @default(false)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
