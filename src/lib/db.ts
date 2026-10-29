@@ -7,9 +7,18 @@ const globalForPrisma = globalThis as unknown as {
 }
 
 function getDatabaseUrl() {
-  if (process.env.DATABASE_URL && !process.env.DATABASE_URL.includes('/home/z/my-project')) {
-    return process.env.DATABASE_URL
+  const candidates = [
+    path.resolve(process.cwd(), 'db/custom.db'),
+    path.resolve('/opt/render/project/src/db/custom.db'),
+    path.resolve(process.cwd(), '../db/custom.db'),
+  ]
+
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) {
+      return `file:${candidate}`
+    }
   }
+
   const dbDir = path.resolve(process.cwd(), 'db')
   if (!fs.existsSync(dbDir)) {
     fs.mkdirSync(dbDir, { recursive: true })
